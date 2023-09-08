@@ -4,7 +4,6 @@ import com.api.crud.models.UserModel;
 import com.api.crud.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.lwawt.macosx.CTrayIcon;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -28,11 +27,15 @@ public class UserService {
     }
 
     public UserModel updateById(UserModel request, Long id) {
-        UserModel user = userRepository.findById(id).get();
+        UserModel user = userRepository.findById(id).orElse(null);
 
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
+        if (user != null) {
+            user.setFirstName(request.getFirstName());
+            user.setLastName(request.getLastName());
+            user.setEmail(request.getEmail());
+
+            userRepository.save(user);
+        }
 
         return user;
     }
